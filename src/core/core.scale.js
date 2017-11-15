@@ -103,12 +103,13 @@ module.exports = function(Chart) {
 		var size = valueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
 		var style = valueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle);
 		var family = valueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily);
+		var func = valueOrDefault(options.fontFunction, null);
 
 		return {
 			size: size,
 			style: style,
 			family: family,
-			font: helpers.fontString(size, style, family)
+			font: func || helpers.fontString(size, style, family)
 		};
 	}
 
@@ -849,7 +850,12 @@ module.exports = function(Chart) {
 					context.save();
 					context.translate(itemToDraw.labelX, itemToDraw.labelY);
 					context.rotate(itemToDraw.rotation);
-					context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
+
+					if (typeof tickFont.font === 'function') {
+						context.font = tickFont.font(index);
+					} else {
+						context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
+					}
 
 					if (Object.prototype.toString.call( tickFontColor ) === '[object Array]') {
 						context.fillStyle = itemToDraw.major ? majorTickFontColor[index] : tickFontColor[index];
