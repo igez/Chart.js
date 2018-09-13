@@ -857,10 +857,18 @@ module.exports = function(Chart) {
 						context.font = itemToDraw.major ? majorTickFont.font : tickFont.font;
 					}
 
+					if (optionTicks.drawArc && optionTicks.arcValue) {
+						context.beginPath();
+						context.arc.apply(context, optionTicks.arcValue);
+						context.fillStyle = '#ffffff'
+						context.fill();
+					}
+
+
 					if (Object.prototype.toString.call( tickFontColor ) === '[object Array]') {
 						context.fillStyle = itemToDraw.major ? majorTickFontColor[index] : tickFontColor[index];
 					} else if (typeof tickFontColor === 'function') {
-						context.fillStyle = tickFontColor(index);
+						context.fillStyle = tickFontColor(index, itemToDraw);
 					} else {
 						context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
 					}
@@ -869,6 +877,7 @@ module.exports = function(Chart) {
 					context.textAlign = itemToDraw.textAlign;
 
 					var label = itemToDraw.label;
+
 					if (helpers.isArray(label)) {
 						for (var i = 0, y = 0; i < label.length; ++i) {
 							// We just make sure the multiline element is a string here..
